@@ -1,0 +1,4 @@
+import { apiRequest } from "@/lib/api";
+import type { Customer } from "@/types/customer";
+import type { Order } from "@/types/order";
+export const customerService = { list: (search?: string) => apiRequest<Customer[]>(`/api/customers/${search ? `?search=${encodeURIComponent(search)}` : ""}`), get: (id: string) => apiRequest<Customer>(`/api/customers/${id}`), create: (data: Omit<Customer, "id" | "created_at" | "updated_at">) => apiRequest<Customer>("/api/customers/", { method: "POST", body: JSON.stringify(data) }), update: (id: string, data: Omit<Customer, "id" | "created_at" | "updated_at">) => apiRequest<Customer>(`/api/customers/${id}`, { method: "PUT", body: JSON.stringify(data) }), remove: (id: string) => apiRequest<void>(`/api/customers/${id}`, { method: "DELETE" }), orders: (id: string) => apiRequest<Order[]>(`/api/customers/${id}/orders`) };

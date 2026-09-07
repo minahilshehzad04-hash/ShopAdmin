@@ -1,0 +1,4 @@
+import type { Order } from "@/types/order";
+import { money, titleCase } from "@/lib/utils";
+import Link from "next/link";
+export function RecentOrders({ orders }: { orders: Order[] }) { return <article className="panel orders-table dashboard-list-card"><div className="panel-heading"><h2>Recent orders</h2><Link href="/orders" className="panel-view-all">View all</Link></div><div className="recent-order-head"><span>Order ID</span><span>Customer</span><span>Date</span><span>Amount</span><span>Status</span></div>{orders.slice(0, 5).map((order) => <div className="table-row" key={order.id}><span>#{order.id}</span><span>{order.customer_name || `Customer ${order.customer_id || ""}`}</span><span>{order.created_at?.slice(0, 10) || "Today"}</span><span>{money(Number(order.total_amount))}</span><span className={`status status-${order.status.toLowerCase()}`}>{titleCase(order.status)}</span></div>)}</article>; }

@@ -1,0 +1,2 @@
+import Link from "next/link";
+export function PageHeader({ eyebrow, title, subtitle, action }: { eyebrow: string; title: string; subtitle: string; action?: { href?: string; label: string; onClick?: () => void } }) { return <div className="page-heading"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p className="subtitle">{subtitle}</p></div>{action && (action.onClick ? <button className="primary-button" type="button" onClick={action.onClick}>{action.label}</button> : <Link className="primary-button" href={action.href || "#"}>{action.label}</Link>)}</div>; }

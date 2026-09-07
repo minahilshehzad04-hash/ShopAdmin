@@ -1,0 +1,3 @@
+import Link from "next/link";
+import type { Product } from "@/types/product";
+export function LowStockProducts({ products }: { products: Product[] }) { return <article className="panel dashboard-list-card"><div className="panel-heading"><h2>Low stock products</h2><Link href="/products?stock=low_stock" className="panel-view-all">View All</Link></div>{products.filter((product) => product.stock <= 5).slice(0, 5).map((product) => <div className="product-row" key={product.id}><div className="product-thumb">{product.image_url ? <img src={product.image_url} alt="" /> : product.name[0]}</div><div className="product-copy"><b>{product.name}</b><small>SKU: {product.sku}</small></div><strong className="stock">Stock: {product.stock}</strong></div>)}</article>; }
