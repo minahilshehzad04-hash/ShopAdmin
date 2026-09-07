@@ -1,0 +1,69 @@
+# =========================
+# Frontend - Next.js
+# =========================
+
+node_modules/
+.next/
+out/
+build/
+coverage/
+
+.env
+.env.*
+!.env.example
+
+*.tsbuildinfo
+next-env.d.ts
+
+.vercel/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.DS_Store
+*.pem
+
+
+# =========================
+# Backend - Python
+# =========================
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pytest
+.pytest_cache/
+.coverage
+
+# Environment files
+.env
+.env.*
+
+# Alembic
+# IMPORTANT: Don't ignore migrations!
+# alembic/versions/ should be committed.
+
+
+# =========================
+# IDE / Editor
+# =========================
+
+.vscode/
+.idea/
+
+# =========================
+# OS
+# =========================
+
+.DS_Store
+Thumbs.db
