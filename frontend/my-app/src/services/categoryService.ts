@@ -1,3 +1,14 @@
 import { apiRequest } from "@/lib/api";
 import type { Category, CategoryInput } from "@/types/category";
-export const categoryService = { list: () => apiRequest<Category[]>("/api/categories/"), get: (id: string) => apiRequest<Category>(`/api/categories/${id}`), create: (data: CategoryInput) => apiRequest<Category>("/api/categories/", { method: "POST", body: JSON.stringify(data) }), update: (id: string, data: CategoryInput) => apiRequest<Category>(`/api/categories/${id}`, { method: "PUT", body: JSON.stringify(data) }), remove: (id: string) => apiRequest<void>(`/api/categories/${id}`, { method: "DELETE" }) };
+export const categoryService = {
+    list: () =>
+        apiRequest<Category[]>("/api/categories/"),
+    get: (id: string) => apiRequest<Category>(`/api/categories/${id}`),
+    create: (data: CategoryInput) => apiRequest<Category>("/api/categories/",
+        { method: "POST", body: JSON.stringify(data) }),
+    update: (id: string, data: CategoryInput) =>
+        apiRequest<Category>(`/api/categories/${id}`,
+            { method: "PUT", body: JSON.stringify(data) }),
+    remove: (id: string) => apiRequest<void>(`/api/categories/${id}`,
+        { method: "DELETE" })
+};

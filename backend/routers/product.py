@@ -22,7 +22,7 @@ router = APIRouter(
     tags=["Products"]
 )
 
-@router.patch("/{product_id}/stock", response_model=ProductResponse)
+@router.patch("/{product_id}/stock", response_model=ProductResponse,status_code=200)
 def update_product_stock(product_id: int, payload: StockUpdate, db: Session = Depends(get_db)):
     product = update_product_stock_service(db, product_id, payload.stock)
     if not product:
@@ -30,7 +30,7 @@ def update_product_stock(product_id: int, payload: StockUpdate, db: Session = De
     return product
 
 
-@router.post("/{product_id}/sell", response_model=ProductResponse)
+@router.post("/{product_id}/sell", response_model=ProductResponse, status_code=200)
 def sell_product(product_id: int, payload: SellProduct, db: Session = Depends(get_db)):
     try:
         product = sell_product_service(db, product_id, payload.quantity)
@@ -41,7 +41,7 @@ def sell_product(product_id: int, payload: SellProduct, db: Session = Depends(ge
     return product
 
 #  create product
-@router.post("/", response_model=ProductResponse)
+@router.post("/", response_model=ProductResponse, status_code=201)
 def create_product(
     product: ProductCreate,
     db: Session = Depends(get_db)
@@ -65,7 +65,7 @@ def create_product(
     return create_product_service(db, product.model_dump())
 
 # update product
-@router.put("/{product_id}", response_model=ProductResponse)
+@router.put("/{product_id}", response_model=ProductResponse, status_code=200)
 def update_product(
     product_id: int,
     product: ProductCreate,
@@ -117,7 +117,7 @@ def delete_product(
     delete_product_service(db, product_id)
 
 # get all products
-@router.get("/", response_model=ProductListResponse)
+@router.get("/", response_model=ProductListResponse, status_code=200)
 def get_products(
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=50, ge=1, le=100),
@@ -135,7 +135,7 @@ def get_products(
 
 
 # get product by id
-@router.get("/{product_id}", response_model=ProductResponse)
+@router.get("/{product_id}", response_model=ProductResponse, status_code=200)
 def get_product(
     product_id: int,
     db: Session = Depends(get_db)

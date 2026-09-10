@@ -4,51 +4,54 @@ ShopAdmin is a Next.js dashboard backed by FastAPI, SQLAlchemy, and PostgreSQL f
 
 ## Requirements
 
-- Node.js 20+
-- Python 3.11+
-- PostgreSQL 14+
+- Docker and Docker Compose (recommended)
+- Node.js 20+ (for local frontend development)
+- Python 3.11+ (for local backend development)
 
-## Backend setup
+## Running the Full Stack with Docker (Recommended)
 
-```powershell
-cd backend
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-py -m pip install -r requirements.txt
-Copy-Item .env.example .env
+1. Clone the repository and navigate to the project root.
+2. Ensure you have Docker and Docker Compose installed.
+3. Start the entire application:
+
+```bash
+docker compose up -d
 ```
 
-Set the PostgreSQL values in `backend/.env`, then run migrations and seed data:
+This will spin up three containers:
+- `db`: PostgreSQL database on port 5432
+- `backend`: FastAPI backend on port 8000
+- `frontend`: Next.js frontend on port 3000
 
-```powershell
-alembic upgrade head
-py -m seed
+You can then view the application at http://localhost:3000 and the API documentation at http://localhost:8000/docs.
+
+## Environment Variables
+
+Configuration is handled via `.env` files. The project includes an `.env.example` file in the `backend/` directory.
+
+Backend variables (`backend/.env`):
+- `DB_USER`: PostgreSQL user (default: postgres)
+- `DB_PASSWORD`: PostgreSQL password
+- `DB_HOST`: Database host (default: db)
+- `DB_PORT`: Database port (default: 5432)
+- `DB_NAME`: Database name (default: ShopAdmin)
+
+Frontend variables:
+- `NEXT_PUBLIC_API_URL`: The URL of the backend API (default: http://localhost:8000)
+
+## Running Tests
+
+To run the pytest suite inside the backend container (which uses a transactional rollback fixture to keep the DB clean):
+
+```bash
+docker compose run --rm backend sh -c "PYTHONPATH=/app pytest tests/ -v"
 ```
-
-For a fresh sample database, use `py -m seed --reset`.
-
-Start the API:
-
-```powershell
-uvicorn main:app --reload --port 8000
-```
-
-Swagger is available at http://localhost:8000/docs.
-
-## Frontend setup
-
-```powershell
-cd frontend\my-app
-npm install
-$env:NEXT_PUBLIC_API_URL="http://localhost:8000"
-npm.cmd run dev
-```
-
-Open http://localhost:3000.
 
 ## API
 
-All resource endpoints use the `/api` prefix. Products, categories, customers, orders, order items, and dashboard endpoints are served by the FastAPI application. The frontend reads the API URL from `NEXT_PUBLIC_API_URL` and defaults to `http://localhost:8000`.
+All resource endpoints use the `/api` prefix. Products, categories, customers, orders, order items, and dashboard endpoints are served by the FastAPI application.
+
+There is a health check endpoint at `/health` which also verifies the database connection status.
 
 ## Project layout
 
