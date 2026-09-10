@@ -9,7 +9,7 @@ def test_get_product(client):
         json={
             "name": "Test Laptop",
             "description": "Test product",
-            "price": 150000,
+            "price": 250000,
             "stock": 10,
             "sku": sku,
             "image_url": None,
