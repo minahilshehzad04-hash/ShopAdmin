@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Moon, Sun, Search, X } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 interface SearchResult {
   type: "product" | "order" | "customer";
@@ -14,7 +15,7 @@ interface SearchResult {
 
 async function globalSearch(q: string): Promise<SearchResult[]> {
   if (!q.trim()) return [];
-  const base = "http://localhost:8000/api";
+  const base = `${API_URL}/api`;
   const results: SearchResult[] = [];
 
   try {

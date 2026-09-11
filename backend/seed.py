@@ -95,49 +95,55 @@ def seed(reset: bool = False) -> None:
             db.query(Customer).delete()
             db.commit()
 
-        # 1. Seed Categories
-        if db.query(Category).count() == 0:
-            category_objs = {name: Category(name=name, description=description) for name, description in CATEGORIES}
-            db.add_all(category_objs.values())
+        # 1. Seed Categories without overwriting existing records.
+        category_objs = {category.name: category for category in db.query(Category).all()}
+        missing_categories = [
+            Category(name=name, description=description)
+            for name, description in CATEGORIES
+            if name not in category_objs
+        ]
+        if missing_categories:
+            db.add_all(missing_categories)
             db.flush()
-            print(f"Seeded {len(category_objs)} categories.")
-        else:
-            category_objs = {c.name: c for c in db.query(Category).all()}
+            category_objs.update({category.name: category for category in missing_categories})
+            print(f"Seeded {len(missing_categories)} categories.")
 
         # 2. Seed Products
-        if db.query(Product).count() == 0:
-            products = []
-            for name, cat_name, price, stock, sku, img in PRODUCTS:
-                cat_id = category_objs[cat_name].id if cat_name in category_objs else list(category_objs.values())[0].id
-                products.append(
-                    Product(
-                        name=name,
-                        description=f"Premium {name} featuring the latest technology and top-tier build quality.",
-                        price=Decimal(price),
-                        stock=stock,
-                        sku=sku,
-                        status="Active",
-                        image_url=img,
-                        category_id=cat_id,
-                    )
+        existing_skus = {sku for (sku,) in db.query(Product.sku).all()}
+        new_products = []
+        for name, cat_name, price, stock, sku, img in PRODUCTS:
+            if sku in existing_skus:
+                continue
+            new_products.append(
+                Product(
+                    name=name,
+                    description=f"Premium {name} featuring the latest technology and top-tier build quality.",
+                    price=Decimal(price),
+                    stock=stock,
+                    sku=sku,
+                    status="Active",
+                    image_url=img,
+                    category_id=category_objs[cat_name].id,
                 )
-            db.add_all(products)
+            )
+        if new_products:
+            db.add_all(new_products)
             db.flush()
-            print(f"Seeded {len(products)} products.")
-        else:
-            products = db.query(Product).all()
+            print(f"Seeded {len(new_products)} products.")
+        products = db.query(Product).all()
 
         # 3. Seed Customers
-        if db.query(Customer).count() == 0:
-            customers = [
-                Customer(name=name, email=email, phone=phone, address=addr)
-                for name, email, phone, addr in CUSTOMERS
-            ]
-            db.add_all(customers)
+        existing_emails = {email for (email,) in db.query(Customer.email).all()}
+        new_customers = [
+            Customer(name=name, email=email, phone=phone, address=addr)
+            for name, email, phone, addr in CUSTOMERS
+            if email not in existing_emails
+        ]
+        if new_customers:
+            db.add_all(new_customers)
             db.flush()
-            print(f"Seeded {len(customers)} customers.")
-        else:
-            customers = db.query(Customer).all()
+            print(f"Seeded {len(new_customers)} customers.")
+        customers = db.query(Customer).all()
 
         # 4. Seed Orders (Spread across the last 45 days with varying statuses)
         if db.query(Order).count() == 0:
